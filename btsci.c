@@ -88,18 +88,7 @@ void main (void)	// SCI FSM Test bench
 	
 
 
-void sendsci(unsigned char tx)
-{
-	
-	
-	if (tx==ACK)
-	printf("--> [ACK]\n");
-	else
-	printf("--> [%.2X]\n",tx);
-	
-	fputc(tx,fp);
-	
-}
+
 
 
 void testbench_2(void)
@@ -118,47 +107,32 @@ void testbench_2(void)
    }
    
    
-    fputc(XON,fp);// ojo NOOOOOOOOOOOOOOOOOO olvidar XON
+     fputc(XON,fp);     // ojo NOOOOOOOOOOOOOOOOOO olvidar XON
+    
     //fputs(" ",fp);
  
    while( ( ch = fgetc(fp) ) != EOF )
 	{
 		
       printf("-(%c)[%.2X]-",ch,ch);
+    
       rxdata=ch;
+ 
       irq_sci();
-    //  if (msg)
- 	//	  parse_cmd();	
- 	//   msg ++ ojoooooooooooo con esto
-      
+ 
+      if (msg)						// is a messsage available ?
+      {	
+		  msg--; 	
+ 		  command_parser(commands);	// Process the cmd
+	
+	  }
     } 
  
    fclose(fp);
  
 }
 
-/*
- * Pairing ubuntu and android (Miracle)
 
-sdptool add --channel=3 SP
-
-sudo rfcomm listen /dev/rfcomm0 3
-
-Go  to android phone open a serial terminal (example sena BTerm) and
-connect to Ubuntu (note must be a secure conection Eg.: in BTerm uncheck Allow insecure connection ) 
-On linux open a serial terminal on Ubuntu on /dev/rfcomm0 (E.g.: Serial port terminal)
-
-or 
-cat  /dev/rfcomm0  to recieve
-
-echo "hello" > /dev/rfcomm0 to send
-
-
-sudo rfcomm release rfcomm0       kill
-
- * 
- * 
- * */
  
  
 // ***********************I*R*Q***S*C*I**********************************//
@@ -236,7 +210,18 @@ void irq_sci(void)
 } //end of irq
 
 
-
+void sendsci(unsigned char tx)
+{
+	
+	
+	if (tx==ACK)
+	printf("--> [ACK]\n");
+	else
+	printf("--> [%.2X]\n",tx);
+	
+	fputc(tx,fp);
+	
+}
 
 /* ------------- Comand Parser ------------------ */
 	
@@ -255,7 +240,7 @@ unsigned int command_parser(CMD_STR *p2cmd)
 		return(0);
 	}
 	
-	return(-1);	// Error quwue is empty
+	return(-1);	// Error queue is empty
 	
 }
 
@@ -272,7 +257,7 @@ unsigned char data;
     printf("Set text Cmd :");
 	do
 	{
-		if (QueueStatus())		// some news?
+		if (QueueStatus())				// some news?
 			op_status=PullQueue(&data);
 		else
 		
@@ -284,6 +269,7 @@ unsigned char data;
 	
 	
 }
+
 
 void Unknown_Cmd(void)
 
@@ -298,7 +284,7 @@ void Cmd_No_more_msj(void)
 
 {
 
-	printf("End of messages ");
+	printf("End of Tranmision\n");
 	
 }
 
