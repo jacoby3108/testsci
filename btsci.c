@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include "cqueue.h"
 
 
@@ -12,6 +13,22 @@
 #define XON 0x11
 #define XOFF 0x13
 #define EOT 0x04
+
+#define ON 1
+#define OFF 0
+#define DEBUG ON
+
+
+//http://stackoverflow.com/questions/1644868/c-define-macro-for-debug-printing
+#define TRACE(x) do { if (DEBUG==ON) dbg_printf x; } while (0)
+
+void dbg_printf(const char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    vfprintf(stderr, fmt, args);
+    va_end(args);
+}
 
 
 //========= testbench variables ============/
@@ -79,7 +96,7 @@ CMD_STR commands[]= {
 
 void main (void)	// SCI FSM Test bench
 {
-	
+	TRACE(("Test %d",3));
 	testbench_2();				//android
 
 
@@ -110,8 +127,8 @@ void testbench_2(void)
      fputc(XON,fp);     // ojo NOOOOOOOOOOOOOOOOOO olvidar XON
     
     //fputs(" ",fp);
- 
-   while( ( ch = fgetc(fp) ) != EOF )
+     printf("hola \n");
+   while( ( ch = fgetc(fp) ) != EOF )    // timeout don't forget
 	{
 		
       printf("-(%c)[%.2X]-",ch,ch);
