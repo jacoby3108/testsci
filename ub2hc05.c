@@ -12,8 +12,17 @@
 #define XOFF 0x13
 #define EOT 0x04
 
+#define C_Black   0
+#define C_Blue    1
+#define C_Green   2
+#define C_Cyan    3
+#define C_Red     4
+#define C_Magenta 5
+#define C_Yellow  6
+#define C_White   7
 
 void SendTextFrame(unsigned char *pmsg);
+void SendColorFrame(unsigned char *pmsg);
 void EndOfTransmision(void);
 void WaitAck(void);
 
@@ -32,8 +41,8 @@ void WaitAck(void);
 // Test messages
 
 unsigned char pEOT[]={STX,ETX,EOT};
-unsigned char msg1[]={"HAGAN LIO"};
-
+unsigned char msg0[]={"HAGAN LIO"};
+unsigned char msg1[]={"LUNES MARTES MIERCOLES JUEVES VIERNES SABADO DOMINGO LUNES MARTES MIERCOLES JUEVES VIERNES SABADO DOMINGO LUNES MARTES MIERCOLES JUEVES VIERNES SABADO DOMINGO  "};
 
 
 
@@ -92,22 +101,19 @@ int main(int number_of_args, char* list_of_args[])
 		
 		
 		
-   if (number_of_args==2)
+    if (number_of_args==2)
         SendTextFrame(list_of_args[1]);
 	else		
 		SendTextFrame(msg1);  
 		
-		
-        printf("Send Text\n");
-        
-		WaitAck();
-	
-		
-			
-		EndOfTransmision();
-		printf("End of Trasmition\n");
 
-		WaitAck();
+		
+ 
+
+	SendColorFrame("3");
+	
+		EndOfTransmision();
+
 			
 		printf("\n");
 		fclose(fp);
@@ -138,15 +144,49 @@ void SendTextFrame(unsigned char *pmsg)
 	  
 	  i=0;
 	  
+	   printf("\nSend Text: ");
 	  while((rxdata=msg2bt[i++])!=EOT)
 			{
 				fputc(rxdata,fp);
-				 printf(" (%c)[%.2X]",rxdata,rxdata);
+//				 printf(" (%c)[%.2X]",rxdata,rxdata);
 			}
 		
+	 
+      WaitAck();
+
 	  
   }
 
+void SendColorFrame(unsigned char *pmsg)
+  {
+	  int i=0;
+	  
+	  msg2bt[i++]=STX;
+	  
+	  msg2bt[i++]='C';
+	  
+	  while (*pmsg)
+	   
+	  msg2bt[i++]=*pmsg++;
+	   
+	  
+	  msg2bt[i++]=ETX;
+	  
+	  msg2bt[i++]=EOT;
+	  
+	  i=0;
+	  
+	  printf("\nSend Color: ");
+	  while((rxdata=msg2bt[i++])!=EOT)
+			{
+				fputc(rxdata,fp);
+//				 printf(" (%c)[%.2X]",rxdata,rxdata);
+			}
+		
+	
+      WaitAck();
+ 
+  }
 
  void WaitAck(void)
 {
@@ -168,11 +208,19 @@ void SendTextFrame(unsigned char *pmsg)
 void EndOfTransmision(void)
 {
 			i=0;
+			printf("\nEnd of Trasmition");	
+		
 			while((rxdata=pEOT[i++])!=EOT)
 			{
 				fputc(rxdata,fp);
-	//			printf(" (%c)[%.2X]",rxdata,rxdata);
+//				printf(" (%c)[%.2X]",rxdata,rxdata);
 			}
+			
+
+		
+
+			WaitAck();			
+			
 }		
 	
 	 
