@@ -12,14 +12,14 @@
 #define XOFF 0x13
 #define EOT 0x04
 
-#define C_Black   0
-#define C_Blue    1
-#define C_Green   2
-#define C_Cyan    3
-#define C_Red     4
-#define C_Magenta 5
-#define C_Yellow  6
-#define C_White   7
+#define C_Black   "0"
+#define C_Blue    "1"
+#define C_Green   "2"
+#define C_Cyan    "3"
+#define C_Red     "4"
+#define C_Magenta "5"
+#define C_Yellow  "6"
+#define C_White   "7"
 
 void SendTextFrame(unsigned char *pmsg);
 void SendColorFrame(unsigned char *pmsg);
@@ -105,12 +105,8 @@ int main(int number_of_args, char* list_of_args[])
         SendTextFrame(list_of_args[1]);
 	else		
 		SendTextFrame(msg1);  
-		
-
-		
- 
-
-	SendColorFrame("3");
+	
+		SendColorFrame(C_Red);
 	
 		EndOfTransmision();
 
@@ -148,7 +144,7 @@ void SendTextFrame(unsigned char *pmsg)
 	  while((rxdata=msg2bt[i++])!=EOT)
 			{
 				fputc(rxdata,fp);
-//				 printf(" (%c)[%.2X]",rxdata,rxdata);
+				 printf(" (%c)[%.2X]",rxdata,rxdata);
 			}
 		
 	 
@@ -180,7 +176,7 @@ void SendColorFrame(unsigned char *pmsg)
 	  while((rxdata=msg2bt[i++])!=EOT)
 			{
 				fputc(rxdata,fp);
-//				 printf(" (%c)[%.2X]",rxdata,rxdata);
+				 printf(" (%c)[%.2X]",rxdata,rxdata);
 			}
 		
 	

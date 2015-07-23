@@ -1,7 +1,9 @@
 #ifndef CQUEUE_H
 #define CQUEUE_H
 
-#define QSIZE  200	// Queue size 
+////#define QSIZE  200	// Queue size 
+
+#define QSIZE  10	// Queue size 
 
 
 void QueueInit(void);
