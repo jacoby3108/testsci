@@ -2,10 +2,11 @@
 
 
 
-#include "stdio.h"
+#include <stdio.h>
+
 	
 
-
+int myround(double number);
 
 static unsigned int bat_level=900;     // Battery Level 	
 static unsigned char bat_status=0;     // Battery Status 
@@ -41,7 +42,7 @@ static unsigned char bat_status=0;     // Battery Status
 
 float Vnorm = 8.0;
 float Vmed =  7.5;
-float Vlow =  6.5;
+float Vlow =  6.8;
 float Vcrit = 6.1;
 float K=0.5;		// Resistor Divider
 
@@ -103,13 +104,24 @@ void Analog_Dig(void)
 	
 	Vin=Vnorm*K;    // Vin=Vbat*K  K=Resistor Divider 
 		
-	printf("\nNORMAL_LEVEL:%f\n\n",(Vin/VFS)*1024);	// Vadc= (Vin/VFS)*1024 
+	printf("\nNORMAL_LEVEL:%d\n\n",myround((Vin/VFS)*1024));	// Vadc= (Vin/VFS)*1024 
 	
 	
 	Vin=Vmed*K;    // Vin=Vbat*K  K=Resistor Divider 
 		
-	printf("\nMEDIUM_LEVEL:%f\n\n",(Vin/VFS)*1024);	// Vadc= (Vin/VFS)*1024 
-	  
+	printf("\nMEDIUM_LEVEL:%d\n\n",myround((Vin/VFS)*1024));	// Vadc= (Vin/VFS)*1024 
 	
+	Vin=Vlow*K;    // Vin=Vbat*K  K=Resistor Divider 
+		
+	printf("\nLOW_LEVEL:%d\n\n",myround((Vin/VFS)*1024));	// Vadc= (Vin/VFS)*1024   
 	
+	Vin=Vcrit*K;    // Vin=Vbat*K  K=Resistor Divider 
+		
+	printf("\nLOW_LEVEL:%d\n\n",myround((Vin/VFS)*1024));	// Vadc= (Vin/VFS)*1024   
+}
+
+
+int myround(double number)
+{
+    return (number >= 0) ? (int)(number + 0.5) : (int)(number - 0.5);
 }

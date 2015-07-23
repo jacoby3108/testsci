@@ -21,8 +21,25 @@
 #define C_Yellow  "6"
 #define C_White   "7"
 
+
+#define S_0   "0" 
+#define S_1   "1" 
+#define S_2   "2" 
+#define S_3   "3" 
+#define S_4   "4" 
+#define S_5   "5" 
+#define S_6   "6" 
+#define S_7   "7" 
+#define S_8   "8" 
+#define S_9   "9" 
+
+
+
+
+
 void SendTextFrame(unsigned char *pmsg);
 void SendColorFrame(unsigned char *pmsg);
+void SendSpeedFrame(unsigned char *pmsg);
 void EndOfTransmision(void);
 void WaitAck(void);
 
@@ -107,6 +124,8 @@ int main(int number_of_args, char* list_of_args[])
 		SendTextFrame(msg1);  
 	
 		SendColorFrame(C_Red);
+		
+		SendSpeedFrame(S_0);
 	
 		EndOfTransmision();
 
@@ -183,6 +202,42 @@ void SendColorFrame(unsigned char *pmsg)
       WaitAck();
  
   }
+  
+  
+  void SendSpeedFrame(unsigned char *pmsg)
+  {
+	  int i=0;
+	  
+	  msg2bt[i++]=STX;
+	  
+	  msg2bt[i++]='S';
+	  
+	  while (*pmsg)
+	   
+	  msg2bt[i++]=*pmsg++;
+	   
+	  
+	  msg2bt[i++]=ETX;
+	  
+	  msg2bt[i++]=EOT;
+	  
+	  i=0;
+	  
+	  printf("\nSend speed: ");
+	  while((rxdata=msg2bt[i++])!=EOT)
+			{
+				fputc(rxdata,fp);
+				 printf(" (%c)[%.2X]",rxdata,rxdata);
+			}
+		
+	
+      WaitAck();
+ 
+  }
+  
+  
+  
+  
 
  void WaitAck(void)
 {
@@ -227,7 +282,8 @@ sdptool add --channel=3 SP
 
 sudo rfcomm listen /dev/rfcomm0 3
 
-Go  to android phone open a serial terminal (example sena BTerm) and
+Go  to android phone open a serial ter
+minal (example sena BTerm) and
 connect to Ubuntu (note must be a secure conection Eg.: in BTerm uncheck Allow insecure connection ) 
 On linux open a serial terminal on Ubuntu on /dev/rfcomm0 (E.g.: Serial port terminal)
 
