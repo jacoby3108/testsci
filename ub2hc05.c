@@ -35,13 +35,16 @@
 
 
 
-
+//98:D3:31:80:47:1B;
 
 void SendTextFrame(unsigned char *pmsg);
 void SendColorFrame(unsigned char *pmsg);
 void SendSpeedFrame(unsigned char *pmsg);
+void SendBatteryFrame(unsigned char *pmsg);
 void EndOfTransmision(void);
 void WaitAck(void);
+void WaitSTX(void);
+void WaitETX(void);
 
 //notes
 //http://stackoverflow.com/questions/1289881/using-gcc-to-produce-readable-assembly
@@ -114,6 +117,13 @@ int main(int number_of_args, char* list_of_args[])
 				
 			
 		}
+		
+		
+		
+		
+		SendBatteryFrame("algo");
+		EndOfTransmision();
+		exit(0);
 		
 		
 		
@@ -235,7 +245,44 @@ void SendColorFrame(unsigned char *pmsg)
  
   }
   
-  
+void SendBatteryFrame(unsigned char *pmsg)
+  {
+	  int i=0;
+	  char ch;
+	  
+	  msg2bt[i++]=STX;
+	  
+	  msg2bt[i++]='B';
+	  
+	//  while (*pmsg)
+	   
+	//  msg2bt[i++]=*pmsg++;
+	   
+	  
+	  msg2bt[i++]=ETX;
+	  
+	  msg2bt[i++]=EOT;
+	  
+	  i=0;
+	  
+	  printf("\nSend Batt: ");
+	  while((rxdata=msg2bt[i++])!=EOT)
+			{
+				fputc(rxdata,fp);
+				 printf(" (%c)[%.2X]",rxdata,rxdata);
+			}
+		
+	
+      WaitAck();
+      WaitSTX();
+      
+      
+      ch = fgetc(fp);
+      printf("\n >> BATTERY: %c << \n",ch);
+      
+      WaitETX();
+ 
+  }  
   
   
 
@@ -255,6 +302,42 @@ void SendColorFrame(unsigned char *pmsg)
 				
 
 } 
+
+ void WaitSTX(void)
+{
+	char ch;
+	while( ( ch = fgetc(fp) ) != STX )
+	{
+     
+			
+			i--;
+			
+			
+	}
+		
+	printf("\n >> STX << \n");
+				
+
+} 
+
+
+void WaitETX(void)
+{
+	char ch;
+	while( ( ch = fgetc(fp) ) != ETX )
+	{
+     
+			
+			i--;
+			
+			
+	}
+		
+	printf("\n >> ETX << \n");
+				
+
+} 
+
  
 void EndOfTransmision(void)
 {
