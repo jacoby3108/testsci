@@ -35,12 +35,23 @@
 
 
 
+#define I_0   "0" 
+#define I_1   "1" 
+#define I_2   "2" 
+
+#define PARTY_ON   "1" 
+#define PARTY_OFF   "0" 
+ 
+
+
 //98:D3:31:80:47:1B;
 
 void SendTextFrame(unsigned char *pmsg);
 void SendColorFrame(unsigned char *pmsg);
 void SendSpeedFrame(unsigned char *pmsg);
 void SendBatteryFrame(unsigned char *pmsg);
+void SendIntensityFrame(unsigned char *pmsg);
+void SendPartyFrame(unsigned char *pmsg);
 void EndOfTransmision(void);
 void WaitAck(void);
 void WaitSTX(void);
@@ -121,7 +132,11 @@ int main(int number_of_args, char* list_of_args[])
 		
 		
 		
-		SendBatteryFrame("algo");
+		//SendBatteryFrame("algo");
+		//SendIntensityFrame(I_0);
+		  
+        SendPartyFrame(PARTY_OFF);
+		
 		EndOfTransmision();
 		exit(0);
 		
@@ -135,7 +150,7 @@ int main(int number_of_args, char* list_of_args[])
 	
 		SendColorFrame(C_Red);
 		
-		SendSpeedFrame(S_0);
+		SendSpeedFrame(S_2);
 	
 		EndOfTransmision();
 
@@ -244,6 +259,73 @@ void SendColorFrame(unsigned char *pmsg)
       WaitAck();
  
   }
+  
+  
+  
+   void SendIntensityFrame(unsigned char *pmsg)
+  {
+	  int i=0;
+	  
+	  msg2bt[i++]=STX;
+	  
+	  msg2bt[i++]='I';
+	  
+	  while (*pmsg)
+	   
+	  msg2bt[i++]=*pmsg++;
+	   
+	  
+	  msg2bt[i++]=ETX;
+	  
+	  msg2bt[i++]=EOT;
+	  
+	  i=0;
+	  
+	  printf("\nSend Intensity: ");
+	  while((rxdata=msg2bt[i++])!=EOT)
+			{
+				fputc(rxdata,fp);
+				 printf(" (%c)[%.2X]",rxdata,rxdata);
+			}
+		
+	
+      WaitAck();
+ 
+  }
+  
+  
+  
+   void SendPartyFrame(unsigned char *pmsg)
+  {
+	  int i=0;
+	  
+	  msg2bt[i++]=STX;
+	  
+	  msg2bt[i++]='F';
+	  
+	  while (*pmsg)
+	   
+	  msg2bt[i++]=*pmsg++;
+	   
+	  
+	  msg2bt[i++]=ETX;
+	  
+	  msg2bt[i++]=EOT;
+	  
+	  i=0;
+	  
+	  printf("\nSend Party: ");
+	  while((rxdata=msg2bt[i++])!=EOT)
+			{
+				fputc(rxdata,fp);
+				 printf(" (%c)[%.2X]",rxdata,rxdata);
+			}
+		
+	
+      WaitAck();
+ 
+  } 
+  
   
 void SendBatteryFrame(unsigned char *pmsg)
   {
